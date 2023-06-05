@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResilientApi", "src\ResilientApi\ResilientApi.csproj", "{A4F48003-4D27-46A4-8609-960BD9E1486A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forex.Domain", "src\Forex.Domain\Forex.Domain.csproj", "{09F86ECA-C207-405D-9E2D-BF9227387AAF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resilient.Api", "src\Resilient.Api\Resilient.Api.csproj", "{1345E466-1310-4B07-BA83-4A2C2A8053F8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Common", "src\Web.Common\Web.Common.csproj", "{2D0CB21D-9605-4C38-B3AC-596E27ED2001}"
@@ -17,14 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A4F48003-4D27-46A4-8609-960BD9E1486A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4F48003-4D27-46A4-8609-960BD9E1486A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4F48003-4D27-46A4-8609-960BD9E1486A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4F48003-4D27-46A4-8609-960BD9E1486A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{09F86ECA-C207-405D-9E2D-BF9227387AAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{09F86ECA-C207-405D-9E2D-BF9227387AAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{09F86ECA-C207-405D-9E2D-BF9227387AAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{09F86ECA-C207-405D-9E2D-BF9227387AAF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1345E466-1310-4B07-BA83-4A2C2A8053F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1345E466-1310-4B07-BA83-4A2C2A8053F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1345E466-1310-4B07-BA83-4A2C2A8053F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
