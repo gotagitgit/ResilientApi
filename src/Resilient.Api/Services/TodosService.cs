@@ -1,6 +1,10 @@
-﻿using Resilient.Api.Dtos;
+﻿using Microsoft.Extensions.Options;
+using Polly;
+using Resilient.Api.Dtos;
 using Resilient.Api.Factories;
 using Web.Common.Services;
+using Web.Common.Simmy.Extensions;
+using Web.Common.Simmy.Settings;
 
 namespace Resilient.Api.Services;
 
@@ -14,7 +18,7 @@ internal sealed class TodosService : ITodosService
     }
 
     public async Task<IReadOnlyList<TodoDto>> GetAsync()
-    {
+    {   
         var todos = await _restHttpClientService.GetAsync<IEnumerable<TodoDto>>();
 
         return todos.ToList();

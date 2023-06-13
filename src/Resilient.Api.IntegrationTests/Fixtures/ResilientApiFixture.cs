@@ -1,6 +1,7 @@
-﻿using Resilient.Api.IntegrationTests.Factories;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Resilient.Api.Factories;
+using Resilient.Api.IntegrationTests.Factories;
 using Resilient.Api.IntegrationTests.Services;
-using Web.Common.Services;
 using Xunit.Abstractions;
 
 namespace Resilient.Api.IntegrationTests.Fixtures;
@@ -19,20 +20,26 @@ internal class ResilientApiFixture : IDisposable
 
         _resilientApiHttpClient.BaseAddress = baseUri;
 
-        var restHttpClientService = new RestHttpClientService(_resilientApiHttpClient);
-
-        ResilientApiClientServices = new ResilientApiClientService(restHttpClientService);
-
         ServiceProvider = _resilientApiServerFactory.Server.Services;
-    }
 
-    public IResilientApiClientService ResilientApiClientServices { get; }
+        ResilientApiClientServices = CreateClientService();
+    }
 
     public IServiceProvider ServiceProvider { get; }
 
-    public void Dispose()
-    {     
+    public IResilientApiClientService ResilientApiClientServices { get; }
 
+    private IResilientApiClientService CreateClientService()
+    {
+        var todoClientFactory = ServiceProvider.GetRequiredService<ITodoClientFactory>();
+
+        var restHttpClientService = todoClientFactory.CreateClient();
+
+        return new ResilientApiClientService(restHttpClientService);
+    }
+
+    public void Dispose()
+    { 
         _resilientApiServerFactory.Dispose();
     }
 }

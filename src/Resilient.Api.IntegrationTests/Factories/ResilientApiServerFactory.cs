@@ -27,8 +27,13 @@ public sealed class ResilientApiServerFactory : WebApplicationFactory<Program>
         {
             //services.AddScoped<IMongoDbContext, DbContextFixture>();
 
-            //services.Configure<DatabaseSettings>(x => x.DatabaseName = $"inventory_test_db_{Guid.NewGuid()}");
+            //services.Configure<DatabaseSettings>(x => x.DatabaseName = $"inventory_test_db_{Guid.NewGuid()}");           
+            
         });
+
+        //var policyRegistry = base.Server.Services.GetRequiredService<IPolicyRegistry<string>>();
+
+        //policyRegistry?.AddHttpChaosInjectors();
 
         base.ConfigureWebHost(builder);
     }

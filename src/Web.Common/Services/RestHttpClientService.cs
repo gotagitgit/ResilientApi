@@ -1,5 +1,8 @@
-﻿using System.Text;
+﻿using Polly;
+using System.Text;
 using System.Text.Json;
+using Web.Common.Simmy.Extensions;
+using Web.Common.Simmy.Settings;
 
 namespace Web.Common.Services;
 
@@ -7,11 +10,13 @@ public sealed class RestHttpClientService : IRestHttpClientService
 {
     private readonly HttpClient _httpClient;
     private readonly Uri _baseUri;
+    private readonly ChaosSettings _chaosSettings;
 
-    public RestHttpClientService(HttpClient httpClient)
+    public RestHttpClientService(HttpClient httpClient, ChaosSettings chaosSettings)
     {
         _httpClient = httpClient;
         _baseUri = _httpClient.BaseAddress;
+        _chaosSettings = chaosSettings;
     }
 
     public async Task<TResponse> PostAsync<TRequest, TResponse>(string routeSuffix, TRequest requestContent)
@@ -33,9 +38,20 @@ public sealed class RestHttpClientService : IRestHttpClientService
 
         using var request = new HttpRequestMessage(HttpMethod.Get, uri);
 
+        InjectChaosSettingsToRequest(request, "Status");
+
         var response = await _httpClient.SendAsync(request);      
 
         return await DeserializeRespnseAsync<TResponse>(response);
+    }
+    private void InjectChaosSettingsToRequest(HttpRequestMessage request, string contextName) 
+    {
+        if (_chaosSettings is null)
+            return;
+
+        var context = new Context(contextName).WithChaosSettings(_chaosSettings);
+
+        request.SetPolicyExecutionContext(context);
     }
 
     private static HttpContent Serialize<T>(T value)
