@@ -25,10 +25,7 @@ public sealed class ResilientApiServerFactory : WebApplicationFactory<Program>
 
         builder.ConfigureTestServices(services =>
         {
-            //services.AddScoped<IMongoDbContext, DbContextFixture>();
-
-            //services.Configure<DatabaseSettings>(x => x.DatabaseName = $"inventory_test_db_{Guid.NewGuid()}");           
-            
+            services.AddSingleton<ILoggerFactory>(_ => new MockLoggerFactory(_testOutputHelper));
         });
 
         //var policyRegistry = base.Server.Services.GetRequiredService<IPolicyRegistry<string>>();

@@ -1,10 +1,5 @@
-﻿using Microsoft.Extensions.Options;
-using Polly;
-using Resilient.Api.Dtos;
-using Resilient.Api.Factories;
+﻿using Resilient.Api.Dtos;
 using Web.Common.Services;
-using Web.Common.Simmy.Extensions;
-using Web.Common.Simmy.Settings;
 
 namespace Resilient.Api.Services;
 
@@ -12,9 +7,9 @@ internal sealed class TodosService : ITodosService
 {
     private readonly IRestHttpClientService _restHttpClientService;
 
-    public TodosService(ITodoClientFactory todoClientFactory)
+    public TodosService(IRestHttpClientService restHttpClientService)
     {
-        _restHttpClientService = todoClientFactory.CreateClient();
+        _restHttpClientService = restHttpClientService;
     }
 
     public async Task<IReadOnlyList<TodoDto>> GetAsync()

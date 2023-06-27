@@ -1,6 +1,9 @@
-﻿using Polly;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Polly;
 using System.Text;
 using System.Text.Json;
+using Web.Common.Extensions;
 using Web.Common.Simmy.Extensions;
 using Web.Common.Simmy.Settings;
 
@@ -8,15 +11,19 @@ namespace Web.Common.Services;
 
 public sealed class RestHttpClientService : IRestHttpClientService
 {
+    public const string TodosHttpClientName = "TodosHttpClientName";
+
     private readonly HttpClient _httpClient;
     private readonly Uri _baseUri;
     private readonly ChaosSettings _chaosSettings;
+    private readonly ILogger _logger;
 
-    public RestHttpClientService(HttpClient httpClient, ChaosSettings chaosSettings)
+    public RestHttpClientService(IHttpClientFactory httpClientFactory, IOptions<ChaosSettings> chaosSettings, ILogger<RestHttpClientService> logger)
     {
-        _httpClient = httpClient;
+        _httpClient = httpClientFactory.CreateClient(TodosHttpClientName);
         _baseUri = _httpClient.BaseAddress;
-        _chaosSettings = chaosSettings;
+        _chaosSettings = chaosSettings.Value;
+        _logger = logger;
     }
 
     public async Task<TResponse> PostAsync<TRequest, TResponse>(string routeSuffix, TRequest requestContent)
@@ -44,12 +51,14 @@ public sealed class RestHttpClientService : IRestHttpClientService
 
         return await DeserializeRespnseAsync<TResponse>(response);
     }
+
     private void InjectChaosSettingsToRequest(HttpRequestMessage request, string contextName) 
     {
         if (_chaosSettings is null)
             return;
 
-        var context = new Context(contextName).WithChaosSettings(_chaosSettings);
+        var context = new Context(contextName).WithChaosSettings(_chaosSettings)
+                                              .WithLogger(_logger);
 
         request.SetPolicyExecutionContext(context);
     }

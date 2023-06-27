@@ -20,15 +20,13 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 builder.Host.UseSerilog(logger);
 
-var programLogger = LoggerFactory.Create(x => x.AddSerilog(logger)).CreateLogger(nameof(Program));
-
 var services = builder.Services;
 
 services.Configure<TodoApiSetting>(builder.Configuration.GetSection(nameof(TodoApiSetting)));
 services.Configure<ChaosSettings>(builder.Configuration.GetSection(nameof(ChaosSettings)));
 
 services.RegisterApiDependencies()
-        .AddResilientStrategies(builder.Configuration, programLogger);
+        .AddResilientStrategies(builder.Configuration);
 
 services.AddControllers();
 services.AddEndpointsApiExplorer();

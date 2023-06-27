@@ -1,7 +1,8 @@
 ﻿using Polly;
 using Polly.Extensions.Http;
-using Resilient.Api.Factories;
 using Resilient.Api.Settings;
+using Web.Common.Extensions;
+using Web.Common.Services;
 
 namespace Resilient.Api.Extensions;
 
@@ -9,13 +10,13 @@ public static class ResilientStrategies
 {
     public const string HttpResiliencePolicy = "HttpResiliencePolicy";
 
-    public static IServiceCollection AddResilientStrategies(this IServiceCollection services, IConfiguration configuration, ILogger logger)
+    public static IServiceCollection AddResilientStrategies(this IServiceCollection services, IConfiguration configuration)
     {
         var policyRegistry = services.AddPolicyRegistry();
 
-        policyRegistry[HttpResiliencePolicy] = GetResiliencePolicy(configuration, logger);
+        policyRegistry[HttpResiliencePolicy] = GetResiliencePolicy(configuration);
 
-        services.AddHttpClient(TodoClientFactory.TodosHttpClientName, client =>
+        services.AddHttpClient(RestHttpClientService.TodosHttpClientName, client =>
         {
             var todoApiSettings = configuration.GetSection(nameof(TodoApiSetting)).Get<TodoApiSetting>();
 
@@ -38,17 +39,19 @@ public static class ResilientStrategies
     //    return policies;
     //}
 
-    private static IAsyncPolicy<HttpResponseMessage> GetResiliencePolicy(IConfiguration configuration, ILogger logger)
+    private static IAsyncPolicy<HttpResponseMessage> GetResiliencePolicy(IConfiguration configuration)
     {
         // Define a policy which will form our resilience strategy.  These could be anything.  The settings for them could obviously be drawn from config too.
         var retry = HttpPolicyExtensions.HandleTransientHttpError()
             //.RetryAsync(5);
             .WaitAndRetryAsync(5, _ => TimeSpan.FromMilliseconds(500),
-                (result, timespan, retryNo, context) =>
-                {
-                    logger.LogInformation($"{context.OperationKey}: Retry number {retryNo} within " +
-                        $"{timespan.TotalMilliseconds}ms. Original status code: 503");
-                });
+            (result, timespan, retryNo, context) =>
+            {
+                var logger = context.GetLogger(); // Try using this
+
+                logger.LogInformation($"{context.OperationKey}: Retry number {retryNo} within " +
+                    $"{timespan.TotalMilliseconds}ms. Original status code: 503");               
+            });
 
         return retry;
     }
