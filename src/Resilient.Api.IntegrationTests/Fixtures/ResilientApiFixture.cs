@@ -12,30 +12,26 @@ internal class ResilientApiFixture : IDisposable
 
     public ResilientApiFixture(ITestOutputHelper testOutputHelper)
     {
-        _resilientApiServerFactory = new ResilientApiServerFactory(testOutputHelper);
+        _resilientApiServerFactory = new ResilientApiServerFactory(testOutputHelper);         
 
-        var _resilientApiHttpClient = _resilientApiServerFactory.CreateClient();
+        ServiceProvider = _resilientApiServerFactory.Server.Services;
 
-        var baseUri = new Uri("https://localhost:7017/api/Todo");
+        var resilientApiHttpClient = _resilientApiServerFactory.CreateClient();
 
-        _resilientApiHttpClient.BaseAddress = baseUri;
-
-        ServiceProvider = _resilientApiServerFactory.Server.Services;        
-
-        ResilientApiClientServices = CreateClientService();
+        ResilientApiClientServices = CreateClientService(resilientApiHttpClient);
     }
 
     public IServiceProvider ServiceProvider { get; }
 
     public IResilientApiClientService ResilientApiClientServices { get; }
 
-    private IResilientApiClientService CreateClientService()
+    private IResilientApiClientService CreateClientService(HttpClient httpClient)
     {
         var scope = ServiceProvider.CreateScope();
 
         var restHttpClientService = scope.ServiceProvider.GetRequiredService<IRestHttpClientService>();
 
-        return new ResilientApiClientService(restHttpClientService);
+        return new ResilientApiClientService(httpClient);
     }
 
     public void Dispose()

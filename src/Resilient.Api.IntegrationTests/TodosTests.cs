@@ -21,7 +21,7 @@ public class TodosTests
     }
 
     [Fact]
-    public async void Should_get_todos()
+    public async Task Should_get_todos()
     {
         // Arrange
         //var policyRegistry = _context.ServiceProvider.GetRequiredService<IPolicyRegistry<string>>();
@@ -29,7 +29,7 @@ public class TodosTests
         //policyRegistry?.AddHttpChaosInjectors();
 
         // Act
-        var result = await _resilientApiClient.GetAsync();
+        await _resilientApiClient.GetAsync();
     }
 
     public sealed class TestContext : IDisposable

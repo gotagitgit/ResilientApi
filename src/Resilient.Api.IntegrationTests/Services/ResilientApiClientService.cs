@@ -4,16 +4,18 @@ using Web.Common.Services;
 namespace Resilient.Api.IntegrationTests.Services;
 
 internal class ResilientApiClientService : IResilientApiClientService
-{
-    private readonly IRestHttpClientService _restHttpClientService;
+{    
+    private readonly HttpClient _httpClient;
 
-    public ResilientApiClientService(IRestHttpClientService restHttpClientService)
-    {
-        this._restHttpClientService = restHttpClientService;
+    public ResilientApiClientService(HttpClient httpClient)
+    {        
+        this._httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<TodoDto>> GetAsync()
+    public async Task GetAsync()
     {
-        return await _restHttpClientService.GetAsync<IEnumerable<TodoDto>>();
+        var uri = new Uri(_httpClient.BaseAddress, "/api/todo");
+
+        await _httpClient.GetAsync(uri);
     }
 }

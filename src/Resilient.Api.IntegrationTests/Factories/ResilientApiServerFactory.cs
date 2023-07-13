@@ -25,6 +25,11 @@ public sealed class ResilientApiServerFactory : WebApplicationFactory<Program>
 
         builder.ConfigureTestServices(services =>
         {
+            services.AddHttpClient("ResilientApi", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7017");
+            });
+
             services.AddSingleton<ILoggerFactory>(_ => new MockLoggerFactory(_testOutputHelper));
         });
 
