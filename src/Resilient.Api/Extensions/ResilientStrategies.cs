@@ -1,8 +1,8 @@
 ﻿using Polly;
 using Polly.Extensions.Http;
+using Resilient.Api.Services;
 using Resilient.Api.Settings;
 using Web.Common.Extensions;
-using Web.Common.Services;
 
 namespace Resilient.Api.Extensions;
 
@@ -16,7 +16,7 @@ public static class ResilientStrategies
 
         policyRegistry[HttpResiliencePolicy] = GetResiliencePolicy(configuration);
 
-        services.AddHttpClient(RestHttpClientService.TodosHttpClientName, client =>
+        services.AddHttpClient(TodosApiRestHttpClientService.TodosApi, client =>
         {
             var todoApiSettings = configuration.GetSection(nameof(TodoApiSetting)).Get<TodoApiSetting>();
 

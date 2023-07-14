@@ -1,29 +1,19 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Polly;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
-using Web.Common.Extensions;
-using Web.Common.Simmy.Extensions;
-using Web.Common.Simmy.Settings;
+using Web.Common.ChaosMonkey.Services;
 
-namespace Web.Common.Services;
+namespace Web.Common.RestHttpClient.Services;
 
-public sealed class RestHttpClientService : IRestHttpClientService
-{
-    public const string TodosHttpClientName = "TodosHttpClientName";
-
+public class RestHttpClientService 
+{   
     private readonly HttpClient _httpClient;
+    private readonly IChaosService _chaosService;
     private readonly Uri _baseUri;
-    private readonly ChaosSettings _chaosSettings;
-    private readonly ILogger _logger;
 
-    public RestHttpClientService(IHttpClientFactory httpClientFactory, IOptions<ChaosSettings> chaosSettings, ILogger<RestHttpClientService> logger)
+    public RestHttpClientService(HttpClient httpClient, IChaosService chaosService)
     {
-        _httpClient = httpClientFactory.CreateClient(TodosHttpClientName);
-        _baseUri = _httpClient.BaseAddress;
-        _chaosSettings = chaosSettings.Value;
-        _logger = logger;
+        _httpClient = httpClient;
+        _chaosService = chaosService;
     }
 
     public async Task<TResponse> PostAsync<TRequest, TResponse>(string routeSuffix, TRequest requestContent)
@@ -45,22 +35,11 @@ public sealed class RestHttpClientService : IRestHttpClientService
 
         using var request = new HttpRequestMessage(HttpMethod.Get, uri);
 
-        InjectChaosSettingsToRequest(request, "Status");
+        _chaosService.InjectChaosToRequest(request, "Status");
 
-        var response = await _httpClient.SendAsync(request);      
+        var response = await _httpClient.SendAsync(request);
 
         return await DeserializeRespnseAsync<TResponse>(response);
-    }
-
-    private void InjectChaosSettingsToRequest(HttpRequestMessage request, string contextName) 
-    {
-        if (_chaosSettings is null)
-            return;
-
-        var context = new Context(contextName).WithChaosSettings(_chaosSettings)
-                                              .WithLogger(_logger);
-
-        request.SetPolicyExecutionContext(context);
     }
 
     private static HttpContent Serialize<T>(T value)

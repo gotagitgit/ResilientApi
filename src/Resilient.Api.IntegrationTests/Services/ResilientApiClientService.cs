@@ -1,7 +1,4 @@
-﻿using Resilient.Api.Dtos;
-using Web.Common.Services;
-
-namespace Resilient.Api.IntegrationTests.Services;
+﻿namespace Resilient.Api.IntegrationTests.Services;
 
 internal class ResilientApiClientService : IResilientApiClientService
 {    

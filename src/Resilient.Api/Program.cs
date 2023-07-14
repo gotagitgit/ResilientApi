@@ -3,6 +3,7 @@ using Resilient.Api;
 using Resilient.Api.Extensions;
 using Resilient.Api.Settings;
 using Serilog;
+using Web.Common;
 using Web.Common.Simmy.Extensions;
 using Web.Common.Simmy.Settings;
 
@@ -26,7 +27,8 @@ services.Configure<TodoApiSetting>(builder.Configuration.GetSection(nameof(TodoA
 services.Configure<ChaosSettings>(builder.Configuration.GetSection(nameof(ChaosSettings)));
 
 services.RegisterApiDependencies()
-        .AddResilientStrategies(builder.Configuration);
+        .AddResilientStrategies(builder.Configuration)
+        .RegisterWebCommonDependencies();
 
 services.AddControllers();
 services.AddEndpointsApiExplorer();

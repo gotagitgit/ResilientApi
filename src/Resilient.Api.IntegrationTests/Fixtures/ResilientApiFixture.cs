@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Resilient.Api.IntegrationTests.Factories;
 using Resilient.Api.IntegrationTests.Services;
-using Web.Common.Services;
+using Web.Common.RestHttpClient.Services;
 using Xunit.Abstractions;
 
 namespace Resilient.Api.IntegrationTests.Fixtures;
