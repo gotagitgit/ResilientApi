@@ -5,7 +5,7 @@ namespace Web.Common.Simmy.Extensions;
 
 public static class SimmyContextExtensions
 {
-    public const string ChaosSettings = "ChaosSettings";
+    private const string ChaosSettings = "ChaosSettings";
 
     public static Context WithChaosSettings(this Context context, ChaosSettings options)
     {

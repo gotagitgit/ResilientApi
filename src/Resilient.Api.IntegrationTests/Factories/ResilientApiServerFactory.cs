@@ -34,20 +34,21 @@ public sealed class ResilientApiServerFactory : WebApplicationFactory<Program>
             });
 
             services.AddSingleton<ILoggerFactory>(_ => new MockLoggerFactory(_testOutputHelper));
+            
+            ReplaceTodosApiHttpClientService(services);
 
-            var existingTodosApiHttpClientService = services.First(x => x.ImplementationType == typeof(TodosApiRestHttpClientService));
-
-            services.Remove(existingTodosApiHttpClientService);
-           
             services.AddScoped<IRestHttpClientService, ResilientApiHttpClientService>();
-
-            services.AddScoped<IRestHttpClientService, TodosTestsRestHttpClientService>();
         });
 
-        //var policyRegistry = base.Server.Services.GetRequiredService<IPolicyRegistry<string>>();
-
-        //policyRegistry?.AddHttpChaosInjectors();
-
         base.ConfigureWebHost(builder);
+    }
+
+    private static void ReplaceTodosApiHttpClientService(IServiceCollection services)
+    {
+        var existingTodosApiHttpClientService = services.First(x => x.ImplementationType == typeof(TodosApiRestHttpClientService));
+
+        services.Remove(existingTodosApiHttpClientService);
+
+        services.AddScoped<IRestHttpClientService, TodosTestsRestHttpClientService>();
     }
 }
