@@ -49,8 +49,7 @@ public static class ResilientStrategies
             {
                 var logger = context.GetLogger(); // Try using this
 
-                logger.LogInformation($"{context.OperationKey}: Retry number {retryNo} within " +
-                    $"{timespan.TotalMilliseconds}ms. Original status code: 503");               
+                logger.LogRetry(result, timespan, retryNo, context);            
             });
 
         return retry;

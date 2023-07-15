@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Resilient.Api.IntegrationTests.Loggers;
 using Resilient.Api.IntegrationTests.Services;
 using Resilient.Api.Services;
+using Web.Common.Loggers;
 using Web.Common.RestHttpClient.Services;
 using Xunit.Abstractions;
 namespace Resilient.Api.IntegrationTests.Factories;
@@ -38,6 +40,8 @@ public sealed class ResilientApiServerFactory : WebApplicationFactory<Program>
             ReplaceTodosApiHttpClientService(services);
 
             services.AddScoped<IRestHttpClientService, ResilientApiHttpClientService>();
+
+            services.AddSingleton<IResilientStrategyLogger, TestResilientStrategyLogger>();
         });
 
         base.ConfigureWebHost(builder);

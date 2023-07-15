@@ -1,9 +1,12 @@
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Registry;
 using Resilient.Api.IntegrationTests.Extensions;
 using Resilient.Api.IntegrationTests.Fixtures;
+using Resilient.Api.IntegrationTests.Loggers;
 using Resilient.Api.IntegrationTests.Services;
+using Web.Common.Loggers;
 using Xunit.Abstractions;
 
 namespace Resilient.Api.IntegrationTests;
@@ -30,6 +33,17 @@ public class TodosTests
 
         // Act
         var result = await _resilientApiClient.GetAsync();
+
+        // Assert
+
+        var scope = _context.ServiceProvider.CreateScope();
+
+        var logger = scope.ServiceProvider.GetRequiredService<IResilientStrategyLogger>();
+
+        if (logger is ITestResilientStrategyLogger testLogger)
+        {
+            testLogger.RetryCount.Should().BeGreaterThan(1);
+        }
     }
 
     public sealed class TestContext : IDisposable
