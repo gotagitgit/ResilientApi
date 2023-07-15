@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Resilient.Api.IntegrationTests.Services;
+using Resilient.Api.Services;
 using Web.Common.RestHttpClient.Services;
 using Xunit.Abstractions;
 namespace Resilient.Api.IntegrationTests.Factories;
@@ -33,7 +34,14 @@ public sealed class ResilientApiServerFactory : WebApplicationFactory<Program>
             });
 
             services.AddSingleton<ILoggerFactory>(_ => new MockLoggerFactory(_testOutputHelper));
+
+            var existingTodosApiHttpClientService = services.First(x => x.ImplementationType == typeof(TodosApiRestHttpClientService));
+
+            services.Remove(existingTodosApiHttpClientService);
+           
             services.AddScoped<IRestHttpClientService, ResilientApiHttpClientService>();
+
+            services.AddScoped<IRestHttpClientService, TodosTestsRestHttpClientService>();
         });
 
         //var policyRegistry = base.Server.Services.GetRequiredService<IPolicyRegistry<string>>();
