@@ -16,6 +16,6 @@ internal sealed class RestHttpClientFactory : IRestHttpClientFactory
         if (_httpClientServices.TryGetValue(httpClientName, out var restHttpClientService))
             return restHttpClientService;
 
-        throw new ArgumentException($"Thre is no implementation of {httpClientName} RestHttpClientService");
+        throw new ArgumentException($"There is no implementation of {httpClientName} RestHttpClientService");
     }
 }

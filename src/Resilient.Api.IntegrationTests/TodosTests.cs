@@ -29,7 +29,7 @@ public class TodosTests
         //policyRegistry?.AddHttpChaosInjectors();
 
         // Act
-        await _resilientApiClient.GetAsync();
+        var result = await _resilientApiClient.GetAsync();
     }
 
     public sealed class TestContext : IDisposable

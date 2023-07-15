@@ -14,6 +14,7 @@ public class RestHttpClientService
     {
         _httpClient = httpClient;
         _chaosService = chaosService;
+        _baseUri = httpClient.BaseAddress;
     }
 
     public async Task<TResponse> PostAsync<TRequest, TResponse>(string routeSuffix, TRequest requestContent)

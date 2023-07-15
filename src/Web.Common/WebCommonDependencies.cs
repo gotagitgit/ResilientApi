@@ -9,7 +9,7 @@ public static class WebCommonDependencies
 {
     public static IServiceCollection RegisterWebCommonDependencies(this IServiceCollection services)
     {
-        services.AddScoped<IRestHttpClientService, ResilientApiHttpClientService>();
+        //services.AddScoped<IRestHttpClientService, ResilientApiHttpClientService>();
         services.AddScoped<IChaosService, InjectChaosService>();
 
         services.AddScoped<IRestHttpClientFactory, RestHttpClientFactory>();

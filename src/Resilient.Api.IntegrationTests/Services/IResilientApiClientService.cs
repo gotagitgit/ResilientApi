@@ -4,5 +4,5 @@ namespace Resilient.Api.IntegrationTests.Services;
 
 public interface IResilientApiClientService
 {
-    Task GetAsync();
+    Task<IReadOnlyList<TodoDto>> GetAsync();
 }

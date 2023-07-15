@@ -1,18 +1,21 @@
-﻿namespace Resilient.Api.IntegrationTests.Services;
+﻿using Resilient.Api.Dtos;
+using Web.Common.RestHttpClient.Services;
+
+namespace Resilient.Api.IntegrationTests.Services;
 
 internal class ResilientApiClientService : IResilientApiClientService
-{    
-    private readonly HttpClient _httpClient;
+{
+    private readonly IRestHttpClientService _restHttpClientService;
 
-    public ResilientApiClientService(HttpClient httpClient)
-    {        
-        this._httpClient = httpClient;
+    public ResilientApiClientService(ResilientApiHttpClientService resilientApiHttpClientService)
+    {
+        _restHttpClientService = resilientApiHttpClientService;
     }
 
-    public async Task GetAsync()
+    public async Task<IReadOnlyList<TodoDto>> GetAsync()
     {
-        var uri = new Uri(_httpClient.BaseAddress, "/api/todo");
+        var result = await _restHttpClientService.GetAsync<IReadOnlyList<TodoDto>>("/api/todo");
 
-        await _httpClient.GetAsync(uri);
+        return result;
     }
 }

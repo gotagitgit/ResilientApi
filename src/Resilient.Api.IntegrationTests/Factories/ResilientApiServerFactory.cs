@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Resilient.Api.IntegrationTests.Services;
+using Web.Common.RestHttpClient.Services;
 using Xunit.Abstractions;
 namespace Resilient.Api.IntegrationTests.Factories;
 
@@ -25,12 +27,13 @@ public sealed class ResilientApiServerFactory : WebApplicationFactory<Program>
 
         builder.ConfigureTestServices(services =>
         {
-            services.AddHttpClient("ResilientApi", client =>
+            services.AddHttpClient(ResilientApiHttpClientService.ResilientApi, client =>
             {
                 client.BaseAddress = new Uri("https://localhost:7017");
             });
 
             services.AddSingleton<ILoggerFactory>(_ => new MockLoggerFactory(_testOutputHelper));
+            services.AddScoped<IRestHttpClientService, ResilientApiHttpClientService>();
         });
 
         //var policyRegistry = base.Server.Services.GetRequiredService<IPolicyRegistry<string>>();
