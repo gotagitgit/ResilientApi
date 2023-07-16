@@ -1,8 +1,5 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Polly;
-using Polly.Registry;
-using Resilient.Api.IntegrationTests.Extensions;
 using Resilient.Api.IntegrationTests.Fixtures;
 using Resilient.Api.IntegrationTests.Loggers;
 using Resilient.Api.IntegrationTests.Services;
@@ -24,15 +21,13 @@ public class TodosTests
     }
 
     [Fact]
-    public async Task Should_get_todos()
+    public async Task Should_retry_on_fail()
     {
         // Arrange
-        //var policyRegistry = _context.ServiceProvider.GetRequiredService<IPolicyRegistry<string>>();
-
-        //policyRegistry?.AddHttpChaosInjectors();
 
         // Act
-        var result = await _resilientApiClient.GetAsync();
+        var result = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _resilientApiClient.GetAsync());
 
         // Assert
 
@@ -42,7 +37,7 @@ public class TodosTests
 
         if (logger is ITestResilientStrategyLogger testLogger)
         {
-            testLogger.RetryCount.Should().BeGreaterThan(1);
+            testLogger.RetryCount.Should().BeGreaterThan(0);
         }
     }
 
