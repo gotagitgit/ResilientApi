@@ -2,5 +2,5 @@
 
 public interface IChaosService
 {
-    void InjectChaosToRequest(HttpRequestMessage request, string contextName);
+    void InjectChaosToRequest(HttpRequestMessage request);
 }

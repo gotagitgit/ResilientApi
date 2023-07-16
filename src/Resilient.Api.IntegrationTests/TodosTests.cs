@@ -1,9 +1,11 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Resilient.Api.IntegrationTests.Fixtures;
 using Resilient.Api.IntegrationTests.Loggers;
 using Resilient.Api.IntegrationTests.Services;
 using Web.Common.Loggers;
+using Web.Common.Simmy.Settings;
 using Xunit.Abstractions;
 
 namespace Resilient.Api.IntegrationTests;
@@ -24,21 +26,30 @@ public class TodosTests
     public async Task Should_retry_on_fail()
     {
         // Arrange
+        EnableChaosSetting("Status");
 
         // Act
         var result = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _resilientApiClient.GetAsync());
 
         // Assert
-
         var scope = _context.ServiceProvider.CreateScope();
 
         var logger = scope.ServiceProvider.GetRequiredService<IResilientStrategyLogger>();
 
         if (logger is ITestResilientStrategyLogger testLogger)
         {
-            testLogger.RetryCount.Should().BeGreaterThan(0);
+            testLogger.RetryCount.Should().Be(5);
         }
+    }
+
+    private void EnableChaosSetting(string key)
+    {
+        var chaosSettings = _context.ServiceProvider.GetRequiredService<IOptions<ChaosSettings>>();
+
+        var operationChaosSetting = chaosSettings.Value.OperationChaosSettings.First(x => x.OperationKey == key);
+
+        operationChaosSetting.Enabled = true;
     }
 
     public sealed class TestContext : IDisposable

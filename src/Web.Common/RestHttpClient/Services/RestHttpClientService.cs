@@ -36,7 +36,7 @@ public class RestHttpClientService
 
         using var request = new HttpRequestMessage(HttpMethod.Get, uri);
 
-        _chaosService.InjectChaosToRequest(request, "Status");
+        _chaosService.InjectChaosToRequest(request);
 
         var response = await _httpClient.SendAsync(request);
 

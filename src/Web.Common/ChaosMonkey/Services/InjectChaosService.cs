@@ -21,14 +21,26 @@ internal sealed class InjectChaosService : IChaosService
         _logger = logger;
     }
 
-    public void InjectChaosToRequest(HttpRequestMessage request, string contextName)
+    public void InjectChaosToRequest(HttpRequestMessage request)
     {
         if (_chaosSettings is null)
             return;
+
+        var contextName = GetEnabledChaos();
 
         var context = new Context(contextName).WithChaosSettings(_chaosSettings)
                                               .WithLogger(_logger);
 
         request.SetPolicyExecutionContext(context);
+    }
+
+    private string GetEnabledChaos()
+    {
+        if (!_chaosSettings.OperationChaosSettings.Any(x => x.Enabled))
+            throw new InvalidOperationException("There is no enable chaos settings");
+
+        var enabledChaos = _chaosSettings.OperationChaosSettings.First(x => x.Enabled);
+
+        return enabledChaos.OperationKey;
     }
 }
